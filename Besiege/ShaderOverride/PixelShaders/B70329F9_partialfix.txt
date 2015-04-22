@@ -1,0 +1,12 @@
+//affects the AO effect for first building block & the house
+//commenting out everything in this shader fixes it :)
+
+    ps_3_0 // Converted from ps_2_0 with DarkStarSword's shadertool.py
+	
+    dcl_texcoord v0.xy
+    rcp r0.x, v0.y
+    mul r0.x, v0, r0
+    mov_pp r0, r0.x
+    mov_pp oC0, r0
+	
+// approximately 4 instruction slots used

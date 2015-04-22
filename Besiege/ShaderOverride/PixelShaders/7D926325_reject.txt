@@ -1,0 +1,64 @@
+//this shader is probably used for the different layers of shadow effects on the leaves. Each tree is made up of multiple layers.
+//not of use for fixing broken AO effect
+ 
+	ps_3_0 // Converted from ps_2_0 with DarkStarSword's shadertool.py
+	
+//def c49, Const1, Const2, Const3, Const4 comes in from dx9settings.ini file
+def c199, 0, 1, 0.0625, 1
+
+    dcl_2d s0
+    dcl_2d s1
+    dcl_2d s2
+    dcl_2d s3
+    def c6, 0, 1, 2, -1
+    dcl_texcoord v0
+    dcl_texcoord1 v1.xy
+    dcl_texcoord2 v2.xyz
+    dcl_texcoord3 v3
+    dcl_texcoord4 v4.xyz
+    texld r4, v0, s1 //leaves disappear
+    texldp r2, v3, s3 //makes the leaves white
+    add r0.x, r4.w, -c1
+    cmp r0.x, r0, c6, c6.y
+    mov_pp r0, -r0.x
+    mov r1.y, v0.w
+    mov r1.x, v0.z
+    texld r3, r1, s2 //makes the leaves very dark
+    texkill r0 //removes a layer of shading from leaves
+    texld r0, v1, s0 //removes another layer of shading from leaves
+    mov r0.x, r0.w
+    mad_pp r5.xy, r0, c6.z, c6.w
+    mul_pp r0.xy, r5, r5
+    add_sat_pp r0.x, r0, r0.y
+    add_pp r1.x, -r0, c6.y
+    rsq_pp r1.x, r1.x
+    rcp_pp r5.z, r1.x
+    dp3 r0.x, v2, v2
+    rsq r0.x, r0.x
+    mul r0.xyz, r0.x, v2
+    dp3_sat r0.x, r0, r5
+    mul r1.xyz, r4, c5
+    mul r3.xyz, r1, r3
+    add r0.x, -r0, c6.y
+    pow_pp r1.w, r0.x, c3.x
+    log_pp r0.x, r2.x
+    log_pp r0.z, r2.z
+    log_pp r0.y, r2.y
+    add_pp r2.xyz, -r0, v4
+    log_pp r0.x, r2.w
+    mul_pp r4.xyz, r2, c0
+    mul_pp r4.xyz, r4, -r0.x
+    mov_pp r0.y, c6
+    mad_pp r2.xyz, r3, r2, r4
+    mul r3.xyz, r1.w, c2
+    mov r1.xyz, c4
+    mad_pp r0.w, -r0.x, c0, r0.y
+    mad r1.xyz, c5, r1, r3
+    add_pp r0.xyz, r2, r1
+    mov_pp oC0, r0
+
+//disabling the shader	
+// mov_pp oC0, c199.xxxx //makes leaves black
+	
+
+// approximately 42 instruction slots used (4 texture, 38 arithmetic)

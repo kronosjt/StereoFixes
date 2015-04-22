@@ -1,0 +1,48 @@
+//AO-like effect on trees on map1 on Ipsilon
+
+
+    ps_3_0 // Converted from ps_2_0 with DarkStarSword's shadertool.py
+	
+//def c49, Const1, Const2, Const3, Const4 comes in from dx9settings.ini file
+def c199, 0, 1, 0.0625, 2
+
+    dcl_2d s0
+    dcl_2d s1
+    def c2, 0, 1, 2, -1
+    def c3, 0.5, 0, 0, 0
+    dcl_texcoord v0
+    dcl_texcoord1 v1.xyz
+    dcl_texcoord2 v2.xyz
+    dcl_texcoord3 v3.xyz
+    texld r0, v0, s1 //removes the effect from the leaves of conifers & the tree in the background but trunk isn't fixed.
+    add r0.x, r0.w, -c0
+    cmp r0.x, r0, c2, c2.y
+    mov_pp r0, -r0.x
+    mov r1.y, v0.w
+    mov r1.x, v0.z
+    texld r1, r1, s0 //makes the effect darker, almost black
+    texkill r0 //affects the shading on leaves. not useful.
+    mov r0.y, r1
+    mov r0.x, r1.w
+    mad_pp r0.xy, r0, c2.z, c2.w
+    mul_pp r1.xy, r0, r0
+    add_sat_pp r1.x, r1, r1.y
+    add_pp r1.x, -r1, c2.y
+    rsq_pp r1.x, r1.x
+    rcp_pp r0.z, r1.x
+    dp3 r1.z, v3, r0
+    dp3 r1.x, r0, v1
+    dp3 r1.y, r0, v2
+    mad_pp r0.xyz, r1, c3.x, c3.x
+    mov_pp r0.w, c1.x
+    mov_pp oC0, r0
+
+//disable shader
+//mov oC0.xyzw, c199.yyyy
+		
+// mov r30.y, c49.y
+// if_eq r30.y, c199.x
+	// mov oC0.xyzw, c199.yyyy //1 removes the AO effect on the misaligned shadow but doesn't fix completely
+// endif	
+
+// approximately 22 instruction slots used (2 texture, 20 arithmetic)

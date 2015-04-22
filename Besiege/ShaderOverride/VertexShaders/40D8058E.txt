@@ -1,0 +1,64 @@
+//Shader for AO like effect on the conifers. The output from this is used by PS 2E2CD168
+
+    vs_3_0 // Converted from vs_2_0 with DarkStarSword's shadertool.py
+	
+    def c17, 0.159154907, 0.5, 6.28318501, -3.14159298
+    // Discarded sincos constant c18
+    // Discarded sincos constant c19
+    def c20, 0, 0, 0, 0
+	
+def c199, 0, 1, 0.0625, 0
+	
+    dcl_position v0
+    dcl_tangent v1
+    dcl_normal v2
+    dcl_texcoord v3
+    dcl_texcoord1 v4
+
+	dcl_texcoord o0
+	dcl_texcoord1 o1
+	dcl_texcoord2 o2
+	dcl_texcoord3 o3
+	dcl_position o4
+
+    mov r0.x, c8.z
+    mad r0.x, c11, r0, v0.z
+    mad r0.x, r0, c10, v4
+    mad r0.x, r0, c17, c17.y
+    frc r0.x, r0
+    mad r1.x, r0, c17.z, c17.w
+    sincos r0.xy, r1.x
+    mul r1.x, r0.y, c12
+    mul r1.y, r0, c13.x
+    mul r1.z, r0.y, c14.x
+    mov r1.w, c20.x
+    mul r0, v4.y, r1
+    add r0, r0, v0
+    mov r1.xyz, v1
+    mul r2.xyz, v2.zxyw, r1.yzxw
+    mov r1.xyz, v1
+    mad r1.xyz, v2.yzxw, r1.zxyw, -r2
+    dp4 o4.w, r0, c3
+    dp4 o4.z, r0, c2
+    dp4 o4.y, r0, c1
+    dp4 o4.x, r0, c0
+    mul r1.xyz, r1, v1.w
+    dp3 r0.y, r1, c4
+    dp3 r0.x, v1, c4
+    dp3 r0.z, v2, c4
+    mul o1.xyz, r0, c9.w
+    dp3 r0.y, r1, c5
+    dp3 r0.x, v1, c5
+    dp3 r0.z, v2, c5
+    mul o2.xyz, r0, c9.w
+    dp3 r0.y, r1, c6
+    dp3 r0.x, v1, c6
+    dp3 r0.z, v2, c6
+    mul o3.xyz, r0, c9.w
+   mad o0.zw, v3.xyxy, c16.xyxy, c16
+   mad o0.xy, v3, c15, c15.zwzw
+   
+//setting ouput position to 0
+// mov o4.xyzw, c199.yyyy
+	
+// approximately 43 instruction slots used

@@ -1,0 +1,41 @@
+//AO-like effect rendering at 2x separation on trees on map1 on Ipsilon. 
+//If I disable this shader in debug mode, then the issue is fixed. 
+//But if I set oC0 to 1111 or 0000 it is not fixed.
+//commenting out everything in this shader breaks the tree trunk while disabling the effect
+//setting oC0 to r1 disables the broken AO effect on all objects on the map
+
+    ps_3_0 // Converted from ps_2_0 with DarkStarSword's shadertool.py
+	
+//def c49, Const1, Const2, Const3, Const4 comes in from dx9settings.ini file
+def c199, 0, 1, 0.0625, 1
+    dcl_2d s0
+    dcl_2d s1
+
+dcl_2d s14 //Helix's sampler
+
+    dcl_texcoord v0.xy
+    dcl_texcoord1 v1
+    dcl_texcoord2 v2.xyz
+	texldp r0, v1, s1 //same effect as setting oC0 to 1111
+    texld r1, v0, s0 //makes the whole scene dark. same as setting oC0 to 0000
+    mul r1, r1, c0
+    log_pp r0.x, r0.x
+    log_pp r0.z, r0.z
+    log_pp r0.y, r0.y	
+    add_pp r0.xyz, -r0, v2
+    mul_pp r0.xyz, r1, r0	
+    mov_pp r0.w, r1
+	mov_pp oC0, r0
+ 
+//mov_pp oC0, r1 //setting oC0 to r1 fixes the broken AO effect on conifers & background tree
+	
+
+// mov r30, c200.wwww
+// texkill r30 //using texkill to try & disable the effect of the shader. doesn't work. disables the tree trunks.
+	
+// //disable the effect by setting output color register oC0 to 1111.
+// mov r30.x, c49.x
+// if_eq r30.x, c200.x
+	// mov oC0.xyzw, c200.wwwy //0 doesn't work. 1 fixes effect but breaks tree trunk
+// endif	
+// approximately 10 instruction slots used (2 texture, 8 arithmetic)
